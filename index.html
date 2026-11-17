@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f3f0e9" />
+    <meta
+      name="description"
+      content="Elias Christensen is a product designer. See the work the usual way, or walk through it in a small world."
+    />
+    <title>Elias Christensen, product designer</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23f3f0e9'/%3E%3Cpath d='M10 27V6h12v21z' fill='%23c23a1c'/%3E%3Ccircle cx='18.6' cy='17' r='1.3' fill='%23f3f0e9'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="/src/site.css" />
+  </head>
+  <body>
+    <main class="hero" id="hero" data-mode="look">
+      <canvas id="world" tabindex="-1" aria-label="Three small islands seen from above: a house, a museum of work and a lab, joined by bridges. Once you step in you can walk around them."></canvas>
+
+      <button class="button quiet leave" id="leave" type="button" inert>Back to portfolio <kbd>Esc</kbd></button>
+
+      <!-- the visitor's own picture: the way into dressing them. customize.ts paints it from the stage. -->
+      <button class="avatar" id="avatar" type="button" aria-label="Customize your character" aria-haspopup="dialog" inert>
+        <span class="avatar-face"><img alt="" width="112" height="112" /></span>
+        <span class="avatar-label" aria-hidden="true">Customize</span>
+      </button>
+
+      <!-- the words step back so the world can lead: who, then the invitation, which is also the keyboard's way in -->
+      <div class="intro" id="intro">
+        <h1 class="headline" id="headline">
+          <span class="hello"><span class="w" style="--w: 0">Hi,</span> <span class="w" style="--w: 1">I’m</span> <span class="w" style="--w: 2">Elias.</span></span>
+          <span class="claim">
+            <span class="w" style="--w: 3">This</span> <span class="w" style="--w: 4">is</span> <span class="w" style="--w: 5">my</span> <span class="w" style="--w: 6">portfolio,</span> <span class="w" style="--w: 7">and</span> <span class="w" style="--w: 8">this</span> <span class="w" style="--w: 9">copy</span> <span class="w" style="--w: 10">is</span> <span class="w" style="--w: 11">placeholder</span> <span class="w" style="--w: 12">copy.</span> <span class="w" style="--w: 13">I</span> <span class="w" style="--w: 14">don’t</span> <span class="w" style="--w: 15">know</span> <span class="w" style="--w: 16">what</span> <span class="w" style="--w: 17">to</span> <span class="w" style="--w: 18">write</span> <span class="w" style="--w: 19">here</span> <span class="w" style="--w: 20">yet.</span>
+          </span>
+        </h1>
+        <p class="invite-line">
+          Tired of scrolling through portfolios?
+          <button class="walk" id="enter" type="button" disabled>
+            Try walking through this one instead.<svg class="steps" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <!-- two footprints walking right: the back foot low, the front foot high and a stride ahead -->
+              <g class="foot back" transform="rotate(7 6 13.6)">
+                <ellipse cx="8.6" cy="13.8" rx="3.2" ry="2" />
+                <ellipse cx="2.4" cy="13.5" rx="1.6" ry="1.6" />
+              </g>
+              <g class="foot front" transform="rotate(-7 12.5 6.4)">
+                <ellipse cx="15.2" cy="6.2" rx="3.2" ry="2" />
+                <ellipse cx="9" cy="6.5" rx="1.6" ry="1.6" />
+              </g>
+            </svg>
+          </button>
+        </p>
+      </div>
+
+      <!-- empty but for the loading line: main.ts fits the world into this box -->
+      <div class="plot" id="plot">
+        <p class="loading" id="loading" aria-live="polite">Unpacking the world…</p>
+      </div>
+
+      <a class="classic" id="classic" href="#work">
+        <span class="classic-label">Selected work (classic view)</span>
+        <span class="classic-ring" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M10 3.5v12.5M5 11l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
+      </a>
+
+      <div class="guide" id="guide" aria-live="polite" inert>
+        <p class="guide-line" id="guide-line"></p>
+        <p class="guide-word" id="guide-word"></p>
+      </div>
+
+      <div id="prompt" aria-hidden="true">E</div>
+      <p id="speech" aria-live="polite"></p>
+      <div id="choice" role="group" aria-label="Choose where to go" hidden></div>
+      <div id="chip" aria-hidden="true"></div>
+    </main>
+
+    <!-- placeholder: the work, about and contact sections are not designed yet -->
+    <section class="stub">
+      <p id="work">Selected work goes here.</p>
+      <p id="about">About goes here.</p>
+      <p id="contact">Contact goes here.</p>
+    </section>
+
+    <div id="overlay" role="dialog" aria-modal="true" aria-labelledby="panel-title" inert>
+      <!-- one panel, two sizes: a small note, or the tall sheet a case study opens. The world fills in the words. -->
+      <div id="panel" data-kind="note">
+        <header class="panel-head">
+          <p class="panel-eyebrow" id="panel-eyebrow" hidden></p>
+          <button class="button quiet close" id="close" type="button">Close <kbd>Esc</kbd></button>
+        </header>
+        <h2 id="panel-title"></h2>
+        <p id="panel-text"></p>
+        <!-- where a case study will go: nothing is written yet, so the sheet only shows its shape -->
+        <div class="study-blank" aria-hidden="true">
+          <div class="blank cover"><span>Cover image</span></div>
+          <div class="blank-row">
+            <div class="blank fact"><span>Role</span></div>
+            <div class="blank fact"><span>Timeline</span></div>
+            <div class="blank fact"><span>Outcome</span></div>
+          </div>
+          <div class="blank story"><span>The story</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- dressing the visitor: the choices on the left, the figure itself on the right, watching you choose -->
+    <div id="customize" role="dialog" aria-modal="true" aria-label="Customize your character" inert>
+      <!-- the world's way out, in the same corner, now leading back to the world: it sits on the dimmed page, not on the card -->
+      <button class="button quiet close" id="customize-close" type="button">Back to world <kbd>Esc</kbd></button>
+
+      <div id="customize-panel">
+        <div class="custom-body">
+          <form class="controls" id="customize-form">
+            <!-- the first choice, and the only one of two: bald, or hair down to the shoulders -->
+            <fieldset class="field" style="--i: 0">
+              <legend>Hair</legend>
+              <div class="swatches" data-ring="hair">
+                <label class="swatch">
+                  <input type="radio" name="hair" value="bald" aria-label="Bald" />
+                  <svg viewBox="0 0 28 28" aria-hidden="true"><rect class="head" x="8.5" y="8.5" width="11" height="12" rx="3.6" /></svg>
+                </label>
+                <label class="swatch">
+                  <input type="radio" name="hair" value="long" aria-label="Long hair" />
+                  <svg viewBox="0 0 28 28" aria-hidden="true" style="--hair: #5a3a28"><rect class="head" x="8.5" y="9.6" width="11" height="11.4" rx="3.6" /><path class="hair" d="M7.2 24V13.4C7.2 9.4 10.1 7.2 14 7.2S20.8 9.4 20.8 13.4V24H18.6V14.8Q16.8 12 14 12.2Q11.2 12 9.4 14.8V24Z" /></svg>
+                </label>
+                <span class="ring" aria-hidden="true"></span>
+              </div>
+            </fieldset>
+
+            <fieldset class="field" style="--i: 1">
+              <legend>Face</legend>
+              <div class="swatches" data-ring="face">
+                <label class="swatch">
+                  <input type="radio" name="face" value="bright" aria-label="Bright" />
+                  <svg viewBox="0 0 28 28" aria-hidden="true"><rect class="eye" x="9" y="8.6" width="2.8" height="5.2" rx="1.4" /><rect class="eye" x="16.2" y="8.6" width="2.8" height="5.2" rx="1.4" /><path class="mouth" d="M9.6 17.6Q14 21.4 18.4 17.6" /></svg>
+                </label>
+                <label class="swatch">
+                  <input type="radio" name="face" value="dots" aria-label="Lashes" />
+                  <svg viewBox="0 0 28 28" aria-hidden="true"><circle class="eye" cx="10.6" cy="11.6" r="1.8" /><circle class="eye" cx="17.4" cy="11.6" r="1.8" /><path class="mouth" stroke-width="0.95" d="M9.6 10L9.1 9M9 10.9L8 10.5M18.4 10L18.9 9M19 10.9L20 10.5" /><path class="mouth" d="M12 17.4Q14 18.8 16 17.4" /></svg>
+                </label>
+                <label class="swatch">
+                  <input type="radio" name="face" value="square" aria-label="Square" />
+                  <svg viewBox="0 0 28 28" aria-hidden="true"><rect class="eye" x="8.8" y="9.8" width="3.6" height="3.6" rx="0.8" /><rect class="eye" x="15.6" y="9.8" width="3.6" height="3.6" rx="0.8" /><path class="mouth" d="M11.6 17.8H16.4" /></svg>
+                </label>
+                <label class="swatch">
+                  <input type="radio" name="face" value="happy" aria-label="Happy" />
+                  <svg viewBox="0 0 28 28" aria-hidden="true"><path class="mouth" d="M8.6 12.8Q10.6 9.6 12.6 12.8M15.4 12.8Q17.4 9.6 19.4 12.8" /><path class="mouth" d="M10.6 16.8Q14 20.2 17.4 16.8" /></svg>
+                </label>
+                <label class="swatch">
+                  <input type="radio" name="face" value="wink" aria-label="Wink" />
+                  <svg viewBox="0 0 28 28" aria-hidden="true"><rect class="eye" x="9" y="8.6" width="2.8" height="5.2" rx="1.4" /><path class="mouth" d="M15.4 12.2Q17.4 9 19.4 12.2" /><path class="mouth" d="M10.6 17.4Q15 21 19 17.2" /></svg>
+                </label>
+                <span class="ring" aria-hidden="true"></span>
+              </div>
+            </fieldset>
+
+            <fieldset class="field" style="--i: 2">
+              <legend>Color</legend>
+              <div class="swatches" data-ring="jacket">
+                <label class="swatch"><input type="radio" name="jacket" value="#e7ad38" aria-label="Mustard" /><span class="dot" style="--c: #e7ad38"></span></label>
+                <label class="swatch"><input type="radio" name="jacket" value="#c8402c" aria-label="Tomato" /><span class="dot" style="--c: #c8402c"></span></label>
+                <label class="swatch"><input type="radio" name="jacket" value="#5b8fd1" aria-label="Sky" /><span class="dot" style="--c: #5b8fd1"></span></label>
+                <label class="swatch"><input type="radio" name="jacket" value="#6e8b4e" aria-label="Moss" /><span class="dot" style="--c: #6e8b4e"></span></label>
+                <label class="swatch"><input type="radio" name="jacket" value="#8b5d86" aria-label="Plum" /><span class="dot" style="--c: #8b5d86"></span></label>
+                <span class="ring" aria-hidden="true"></span>
+              </div>
+            </fieldset>
+
+            <!-- every hat is drawn on the same bare head -->
+            <fieldset class="field" style="--i: 3">
+              <legend>Hat</legend>
+              <div class="swatches" data-ring="hat">
+                <label class="swatch">
+                  <input type="radio" name="hat" value="beanie" aria-label="Beanie" />
+                  <svg viewBox="0 0 28 28" aria-hidden="true"><rect class="head" x="8.5" y="12.5" width="11" height="11" rx="3.6" /><path class="cloth" d="M8.4 12.6C8.4 9 10.8 7.2 14 7.2S19.6 9 19.6 12.6Z" /><rect class="cloth dark" x="7.8" y="11.6" width="12.4" height="3" rx="1.2" /><circle class="cloth dark" cx="14" cy="5.8" r="1.7" /></svg>
+                </label>
+                <label class="swatch">
+                  <input type="radio" name="hat" value="boxy" aria-label="Boxy hat" />
+                  <svg viewBox="0 0 28 28" aria-hidden="true"><rect class="head" x="8.5" y="12.5" width="11" height="11" rx="3.6" /><rect class="cloth" x="9.8" y="5.4" width="8.4" height="6.4" rx="0.7" /><rect class="cloth" x="6" y="11.4" width="16" height="2.2" rx="0.7" /></svg>
+                </label>
+                <label class="swatch">
+                  <input type="radio" name="hat" value="cap" aria-label="Cap" />
+                  <svg viewBox="0 0 28 28" aria-hidden="true"><rect class="head" x="8" y="12.5" width="11" height="11" rx="3.6" /><path class="cloth" d="M8.2 13.4V11.4C8.2 8 10.6 6.6 13.5 6.6S18.8 8 18.8 11.4V13.4Z" /><path class="cloth dark" d="M18.8 13.4H23Q23.2 11.9 21.4 11.6L18.8 11.4Z" /></svg>
+                </label>
+                <label class="swatch">
+                  <input type="radio" name="hat" value="bucket" aria-label="Bucket hat" />
+                  <svg viewBox="0 0 28 28" aria-hidden="true"><rect class="head" x="8.5" y="12.5" width="11" height="11" rx="3.6" /><path class="cloth" d="M10.2 11.6L11 6.6H17L17.8 11.6Z" /><path class="cloth" d="M5.8 14.6L9.4 11.2H18.6L22.2 14.6Z" /></svg>
+                </label>
+                <label class="swatch">
+                  <input type="radio" name="hat" value="top" aria-label="Top hat" />
+                  <svg viewBox="0 0 28 28" aria-hidden="true"><rect class="head" x="8.5" y="12.5" width="11" height="11" rx="3.6" /><rect class="cloth" x="9.6" y="2.8" width="8.8" height="9.6" rx="0.7" /><rect class="cloth dark" x="9.6" y="9.2" width="8.8" height="2.4" /><rect class="cloth" x="5.8" y="11.6" width="16.4" height="2" rx="0.8" /></svg>
+                </label>
+                <span class="ring" aria-hidden="true"></span>
+              </div>
+            </fieldset>
+
+            <fieldset class="field" style="--i: 4">
+              <legend>Accessories</legend>
+              <div class="swatches">
+                <label class="swatch toggle">
+                  <input type="checkbox" name="glasses" aria-label="Glasses" />
+                  <svg viewBox="0 0 28 28" aria-hidden="true"><path class="frame" d="M5.4 11.4H12.4V16.6H5.4ZM15.6 11.4H22.6V16.6H15.6ZM12.4 13.2Q14 12.2 15.6 13.2" /></svg>
+                </label>
+                <label class="swatch toggle">
+                  <input type="checkbox" name="scarf" aria-label="Scarf" />
+                  <svg viewBox="0 0 28 28" aria-hidden="true"><path class="cloth dark" d="M15 13.2H18.6L19.6 21.6H16Z" /><path class="cloth dark" d="M6.4 9.4Q14 12.8 21.6 9.4V13Q14 16.4 6.4 13Z" /></svg>
+                </label>
+                <label class="swatch toggle">
+                  <input type="checkbox" name="pack" aria-label="Backpack" />
+                  <svg viewBox="0 0 28 28" aria-hidden="true"><path class="frame" d="M11.4 8.4V6.8Q14 5 16.6 6.8V8.4" /><rect class="wood" x="8.2" y="8.4" width="11.6" height="13.6" rx="2.8" /><path class="cloth dark" d="M8.2 14V11.2A2.8 2.8 0 0 1 11 8.4H17A2.8 2.8 0 0 1 19.8 11.2V14Z" /><rect class="wood" x="11.2" y="16.4" width="5.6" height="3.4" rx="1" /></svg>
+                </label>
+                <label class="swatch toggle">
+                  <input type="checkbox" name="earrings" aria-label="Earrings" />
+                  <svg viewBox="0 0 28 28" aria-hidden="true"><path class="frame" d="M9 7.4V11.2M19 7.4V11.2" /><circle class="gold" cx="9" cy="7" r="1.5" /><circle class="gold" cx="19" cy="7" r="1.5" /><circle class="gold" cx="9" cy="15" r="3.2" /><circle class="gold" cx="19" cy="15" r="3.2" /></svg>
+                </label>
+                <label class="swatch toggle">
+                  <input type="checkbox" name="monocle" aria-label="Monocle" />
+                  <svg viewBox="0 0 28 28" aria-hidden="true"><path class="frame" d="M16.2 15.4Q20.2 18.4 18 23.6" stroke-width="1.2" stroke-dasharray="0.1 2.1" /><circle cx="12" cy="11.4" r="5" fill="none" stroke="#1c1915" stroke-width="3.8" /><circle cx="12" cy="11.4" r="5" fill="none" stroke="#f2bf36" stroke-width="1.6" /></svg>
+                </label>
+              </div>
+            </fieldset>
+          </form>
+
+          <div class="stage" id="stage" style="--i: 1">
+            <p class="stage-say" id="stage-say" aria-live="polite"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

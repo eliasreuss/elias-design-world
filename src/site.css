@@ -1,0 +1,1563 @@
+@import '@fontsource-variable/besley/wght.css';
+@import '@fontsource-variable/hanken-grotesk/wght.css';
+
+:root {
+  /* colour: one off-white sheet from edge to edge, warm black type, and one main colour borrowed from the front door */
+  --ground: #f3f0e9;
+  --ink: #1c1915;
+  --ink-soft: #655e53;
+  --hairline: rgb(28 25 21 / 0.22);
+  --accent: #c23a1c;
+
+  --display: 'Besley Variable', Georgia, 'Times New Roman', serif;
+  --text: 'Hanken Grotesk Variable', 'Helvetica Neue', Arial, sans-serif;
+
+  /* space: one scale, used everywhere */
+  --s1: 0.25rem;
+  --s2: 0.5rem;
+  --s3: 0.75rem;
+  --s4: 1rem;
+  --s5: 1.5rem;
+  --s6: 2rem;
+  --s7: 3rem;
+  --gutter: clamp(1.25rem, 4.86vw, 5.5rem);
+  --edge-top: clamp(1.25rem, 4.5vh, 2.75rem);
+  --edge-bottom: clamp(1.25rem, 5vh, 3rem);
+
+  --radius: 1.25rem;
+  --radius-small: 0.4rem;
+  --radius-pill: 999px;
+
+  /* motion: fast and ease-out for the interface, slower and ease-in-out for the one big move */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --press: 160ms;
+  --quick: 200ms;
+  --enter: 280ms;
+  /* how far things travel as they come and go; zero for anyone who has asked for less motion */
+  --travel: 0.75rem;
+
+  /* the space either side of the world in the hero */
+  --world-air: clamp(var(--s5), 5vh, 3.5rem);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--text);
+  /* the small type grows a little on big screens so it keeps its place around the house */
+  font-size: clamp(100%, 0.5rem + 0.55vw, 125%);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
+  accent-color: var(--accent);
+  caret-color: var(--accent);
+}
+
+/* while you are in the world, the page behind it holds still */
+html.in-world {
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--ground);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ------------------------------------------------------------------ hero */
+
+/* One column on one axis. The world leads; a few quiet words sit above it and the way round sits below. */
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  justify-items: center;
+  height: 100svh;
+  min-height: 36rem;
+  padding: var(--edge-top) var(--gutter) var(--edge-bottom);
+  overflow: hidden;
+}
+
+#world {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  outline: none;
+  transition: opacity 900ms var(--ease-out);
+}
+
+.hero[data-ready] #world {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* the world itself is the way in */
+.hero.over-world #world,
+.hero[data-mode='play'] #world {
+  cursor: pointer;
+}
+
+.hero[data-mode='play'] #world {
+  touch-action: none;
+}
+
+/* Everything typographic sits over the world and lets clicks fall through to it. */
+.intro,
+.plot,
+.classic,
+.guide {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* in the world, the one way out sits in the top corner */
+.leave {
+  position: absolute;
+  z-index: 1;
+  top: var(--edge-top);
+  right: var(--gutter);
+}
+
+/* ----------------------------------------------------------------- intro */
+
+/* Small enough to read as a caption to the world, not a rival to it. */
+.intro {
+  display: grid;
+  justify-items: center;
+  row-gap: var(--s4);
+  max-width: 46rem;
+  margin-top: clamp(var(--s2), 2vh, var(--s5));
+  text-align: center;
+  pointer-events: auto;
+}
+
+/* One sentence in two voices: the name in full ink, what he stands for a step quieter. */
+.headline {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(1.25rem, min(1.75vw, 3.4vh), 2rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+}
+
+.hello,
+.claim {
+  display: block;
+}
+
+.claim {
+  color: var(--ink-soft);
+}
+
+.headline .w {
+  display: inline-block;
+}
+
+.invite-line {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--ink-soft);
+  text-wrap: balance;
+}
+
+/* The invitation is also the keyboard's way in: a link in the sentence, not a button beside it. */
+.walk {
+  display: inline;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--hairline);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.25em;
+  transition:
+    color var(--quick) ease,
+    text-decoration-color var(--quick) ease;
+}
+
+.walk svg {
+  display: inline-block;
+  width: 1.15em;
+  height: 1.15em;
+  margin-left: 0.3em;
+  vertical-align: -0.22em;
+}
+
+/* each footprint moves on its own, so a hover can take a step */
+.walk .foot {
+  transform-box: fill-box;
+  transition: translate var(--quick) var(--ease-out);
+}
+
+/* still loading: it reads the same, it just cannot be used yet */
+.walk:disabled {
+  cursor: progress;
+}
+
+/* pointing at the world is pointing at its invitation */
+.hero.over-world .walk:not(:disabled) {
+  color: var(--accent);
+  text-decoration-color: currentColor;
+}
+
+/* the back foot comes through, then the front one follows */
+.hero.over-world .walk:not(:disabled) .foot {
+  translate: 2px 0;
+}
+
+.hero.over-world .walk:not(:disabled) .front {
+  transition-delay: 70ms;
+}
+
+/* ----------------------------------------------------------------- world */
+
+/* empty but for the loading line: main.ts fits the world into this box */
+.plot {
+  justify-self: stretch;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  margin-block: var(--world-air);
+}
+
+.loading {
+  margin: 0;
+  max-width: 18rem;
+  font-size: 0.9375rem;
+  color: var(--ink-soft);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  transition: opacity var(--enter) var(--ease-out);
+}
+
+.hero[data-ready] .loading:not([data-failed]) {
+  opacity: 0;
+}
+
+/* The way round: the same work, the usual way, one scroll down. */
+.classic {
+  display: grid;
+  justify-items: center;
+  gap: 0.625rem;
+  pointer-events: auto;
+}
+
+.classic-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  transition: color var(--quick) ease;
+}
+
+.classic-ring {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+  transition:
+    background-color var(--quick) ease,
+    color var(--quick) ease,
+    transform var(--press) var(--ease-out);
+}
+
+.classic-ring svg {
+  transition: transform var(--quick) var(--ease-out);
+}
+
+.classic:active .classic-ring {
+  transform: scale(0.95);
+}
+
+/* ------------------------------------------------------------ buttons */
+
+.button {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 3.25rem;
+  padding: 0 1.25rem 0 1.5rem;
+  border-radius: var(--radius-pill);
+  font-size: 1.0625rem;
+  font-weight: 550;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    background-color var(--quick) ease,
+    color var(--quick) ease,
+    box-shadow var(--quick) ease,
+    transform var(--press) var(--ease-out);
+}
+
+.button svg {
+  flex: none;
+  transition: transform var(--quick) var(--ease-out);
+}
+
+.button:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+.quiet {
+  min-height: 2.75rem;
+  padding: 0 1.15rem;
+  font-size: 1rem;
+  background: var(--ground);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+
+.leave {
+  padding-right: 0.7rem;
+}
+
+kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.75rem;
+  height: 1.5rem;
+  padding: 0 0.4rem;
+  border-radius: 0.3rem;
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  font: 600 0.6875rem / 1 var(--text);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  transition:
+    color var(--quick) ease,
+    box-shadow var(--quick) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .walk:not(:disabled):hover {
+    color: var(--accent);
+    text-decoration-color: currentColor;
+  }
+
+  .walk:not(:disabled):hover .foot {
+    translate: 2px 0;
+  }
+
+  .walk:not(:disabled):hover .front {
+    transition-delay: 70ms;
+  }
+
+  .classic:hover .classic-label {
+    color: var(--ink);
+  }
+
+  .classic:hover .classic-ring {
+    background: var(--ink);
+    color: var(--ground);
+  }
+
+  .classic:hover .classic-ring svg {
+    transform: translateY(0.15rem);
+  }
+
+  .quiet:hover {
+    background: var(--ink);
+    color: var(--ground);
+    box-shadow: inset 0 0 0 1px var(--ink);
+  }
+
+  .leave:hover kbd,
+  .close:hover kbd {
+    color: var(--ground);
+    box-shadow: inset 0 0 0 1px rgb(243 240 233 / 0.4);
+  }
+}
+
+/* --------------------------------------------- portfolio vs. in the world */
+
+/* Each piece leaves quickly and comes back a little slower, a beat apart from its neighbours. */
+.intro,
+.classic,
+.leave,
+.avatar,
+.guide {
+  transition:
+    opacity var(--enter) var(--ease-out),
+    transform var(--enter) var(--ease-out),
+    visibility 0s linear 0s,
+    width var(--enter) var(--ease-out);
+}
+
+/* coming back to the portfolio: wait for the world to step aside, then arrive from the top down */
+.intro {
+  transition-delay: 320ms, 320ms, 0s;
+}
+
+.classic {
+  transition-delay: 420ms, 420ms, 0s;
+}
+
+.hero[data-mode='play'] .intro,
+.hero[data-mode='play'] .classic {
+  opacity: 0;
+  visibility: hidden;
+  transition-duration: var(--quick), var(--quick), 0s;
+  transition-delay: 0s, 0s, var(--quick);
+}
+
+/* what sits above the world lifts away; what sits below it sinks */
+.hero[data-mode='play'] .intro {
+  transform: translateY(calc(var(--travel) * -1));
+}
+
+.hero[data-mode='play'] .classic {
+  transform: translateY(var(--travel));
+}
+
+.leave,
+.avatar,
+.guide {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(var(--travel));
+  transition-duration: var(--quick), var(--quick), 0s, var(--enter);
+  transition-delay: 0s, 0s, var(--quick), 0s;
+}
+
+/* in the world: its own controls arrive once the move is well under way */
+.hero[data-mode='play'] .leave,
+.hero[data-mode='play'] .avatar,
+.hero[data-mode='play'] .guide {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-duration: var(--enter), var(--enter), 0s, var(--enter);
+  transition-delay: 520ms, 520ms, 0s, 0s;
+}
+
+.guide {
+  --guide-size: clamp(1.75rem, min(3.2vw, 6vh), 2.75rem);
+  position: absolute;
+  left: var(--gutter);
+  bottom: var(--edge-bottom);
+  /* as wide as the words, so the wash behind them is too; it eases from one line's width to the next
+     (where the browser can animate to a content size; elsewhere it simply snaps) */
+  interpolate-size: allow-keywords;
+  width: fit-content;
+  max-width: min(calc(100% - 2 * var(--gutter)), calc(var(--guide-size) * 15));
+}
+
+/* The page sheet rises up under the words: a soft wash of paper out of the corner, so they read
+   over anything the world puts behind them, and the world still shows faintly through. */
+.guide::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -3rem -4.5rem calc(-1 * var(--edge-bottom) - 3rem) calc(-1 * var(--gutter) - 3rem);
+  background: var(--ground);
+  border-radius: 0 6rem 0 0;
+  filter: blur(2rem);
+  opacity: 0.9;
+}
+
+.guide-line {
+  margin: 0 0 var(--s3);
+  max-width: 26rem;
+  min-height: 1.45em;
+  font-size: 1rem;
+  font-weight: 450;
+  text-wrap: pretty;
+}
+
+.guide-word {
+  margin: 0;
+  /* the big line is now often a whole sentence: two balanced lines at most, kept clear of the world */
+  max-width: 15em;
+  font-family: var(--display);
+  font-size: var(--guide-size);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+/* the little key that floats over whatever can be used */
+#prompt {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  display: none;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin: -2.6rem 0 0 -0.875rem;
+  border-radius: var(--radius-small);
+  background: var(--ink);
+  color: var(--ground);
+  font: 700 0.75rem / 1 var(--text);
+  pointer-events: none;
+  box-shadow: 0 6px 14px -6px rgb(28 25 21 / 0.55);
+}
+
+#prompt.on {
+  display: grid;
+}
+
+/* a fork in the way, such as the lift stopping halfway: arrow buttons laid out like the keys they stand for,
+   centred on a point that interactions.ts pins them to */
+#choice {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  display: grid;
+  grid-template-areas:
+    '. up .'
+    'left down right';
+  /* each key the size of the E prompt */
+  grid-template-columns: repeat(3, 1.75rem);
+  grid-auto-rows: 1.75rem;
+  gap: 0.25rem;
+  translate: -50% -50%;
+}
+
+#choice[hidden] {
+  display: none;
+}
+
+#choice button {
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: var(--radius-small);
+  background: var(--ink);
+  color: var(--ground);
+  padding: 0;
+  font: 700 0.875rem / 1 var(--text);
+  cursor: pointer;
+  box-shadow: 0 6px 14px -6px rgb(28 25 21 / 0.55);
+  transition: scale 125ms var(--ease-out);
+}
+
+#choice button:active {
+  scale: 0.94;
+}
+
+#choice button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+#choice [data-dir='up'] { grid-area: up; }
+#choice [data-dir='down'] { grid-area: down; }
+#choice [data-dir='left'] { grid-area: left; }
+#choice [data-dir='right'] { grid-area: right; }
+
+/* what someone in the world says: a card over their head, pinned there by interactions.ts */
+#speech {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: max-content;
+  max-width: min(17rem, 70vw);
+  margin: 0;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--radius-small) var(--radius-small) var(--radius-small) 0;
+  background: var(--ground);
+  box-shadow:
+    inset 0 0 0 1px var(--hairline),
+    0 10px 24px -12px rgb(28 25 21 / 0.5);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.35;
+  text-wrap: pretty;
+  pointer-events: none;
+  /* it sits up and to the right of the speaker, its square corner pointing back at them */
+  translate: 0.4rem calc(-100% - 0.4rem);
+  opacity: 0;
+  visibility: hidden;
+}
+
+#speech.on {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* a label that rides beside the pointer while it is over the world, saying what a click will do */
+#chip {
+  position: fixed;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  /* main.ts moves this wrapper with the pointer; the pill inside does the appearing */
+  pointer-events: none;
+}
+
+#chip::after {
+  content: 'Step inside';
+  display: block;
+  margin: 1.1rem 0 0 1.1rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  color: var(--ground);
+  font: 550 0.875rem / 1 var(--text);
+  white-space: nowrap;
+  opacity: 0;
+  transform: scale(0.96);
+  transform-origin: 0 0;
+  transition:
+    opacity 125ms var(--ease-out),
+    transform 125ms var(--ease-out);
+}
+
+.hero.over-world #chip::after {
+  opacity: 1;
+  transform: none;
+  transition-duration: 180ms;
+}
+
+/* no keyboard, no keys to show; no pointer, nothing to ride beside */
+@media (pointer: coarse) {
+  #prompt.on,
+  #chip,
+  .avatar-label,
+  .leave kbd,
+  .close kbd {
+    display: none;
+  }
+
+  .leave,
+  .close {
+    padding-right: 1.15rem;
+  }
+}
+
+/* --------------------------------------------------------------- panel */
+
+#overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: var(--gutter);
+  background: rgb(28 25 21 / 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--quick) var(--ease-out),
+    visibility 0s linear var(--quick);
+}
+
+#overlay.open {
+  opacity: 1;
+  visibility: visible;
+  transition-duration: var(--enter), 0s;
+  transition-delay: 0s;
+}
+
+#panel {
+  width: min(30rem, 100%);
+  padding: clamp(1.75rem, 5vw, 2.75rem);
+  border-radius: var(--radius);
+  background: var(--ground);
+  box-shadow: 0 30px 70px -28px rgb(28 25 21 / 0.55);
+  opacity: 0;
+  transform: translateY(var(--travel)) scale(0.97);
+  transition:
+    opacity var(--quick) var(--ease-out),
+    transform var(--quick) var(--ease-out);
+}
+
+#overlay.open #panel {
+  opacity: 1;
+  transform: none;
+  transition-duration: var(--enter);
+}
+
+/* the eyebrow on the left when there is one, the way out always on the right */
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--s4);
+  margin-bottom: var(--s5);
+}
+
+.panel-eyebrow {
+  margin: 0 auto 0 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+#panel .panel-eyebrow {
+  margin: 0 auto 0 0;
+  max-width: none;
+}
+
+.close {
+  padding-right: 0.7rem;
+}
+
+.close kbd {
+  pointer-events: none;
+}
+
+/* a case study gets the tall sheet: most of the window, scrolling inside itself */
+#panel[data-kind='study'] {
+  width: min(58rem, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+#panel[data-kind='study'] h2 {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+}
+
+.study-blank {
+  display: none;
+}
+
+#panel[data-kind='study'] .study-blank {
+  display: grid;
+  gap: var(--s4);
+}
+
+/* an empty place, drawn as one: a dashed outline with its name in the corner */
+.blank {
+  display: grid;
+  align-content: start;
+  min-height: 5.5rem;
+  padding: var(--s3) var(--s4);
+  border: 1px dashed var(--hairline);
+  border-radius: var(--radius-small);
+}
+
+.blank span {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.blank.cover {
+  aspect-ratio: 16 / 7;
+}
+
+.blank.story {
+  min-height: 12rem;
+}
+
+.blank-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s4);
+}
+
+#panel h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+#panel p {
+  margin: var(--s4) 0 var(--s6);
+  max-width: 34ch;
+  color: var(--ink-soft);
+}
+
+/* ---------------------------------------------------------- placeholder */
+
+/* not designed yet: just enough for the links and the scroll to land somewhere */
+.stub {
+  padding: var(--s7) var(--gutter);
+  color: var(--ink-soft);
+}
+
+.stub p {
+  margin: 0;
+  padding: var(--s7) 0;
+  border-top: 1px solid var(--hairline);
+  scroll-margin-top: var(--s5);
+}
+
+/* --------------------------------------------------------------- small */
+
+@media (max-width: 55.99rem) {
+  /* The world is limited by width here, so its box takes the drawing's own shape,
+     and the spare height is shared out evenly between the three pieces. */
+  .hero {
+    grid-template-rows: repeat(3, auto);
+    align-content: space-between;
+    row-gap: var(--s5);
+    height: auto;
+    min-height: max(100svh, 34rem);
+  }
+
+  .intro {
+    margin-top: var(--s4);
+  }
+
+  .headline {
+    font-size: clamp(1.25rem, 5.4vw, 1.625rem);
+  }
+
+  /* the museum keeps the gutter like the words do; its box takes the museum's own shape (set by main.ts) */
+  .plot {
+    margin: 0;
+    aspect-ratio: var(--plot-aspect, 1.45);
+  }
+
+  .blank-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .guide {
+    --guide-size: clamp(1.5rem, min(7vw, 5vh), 2.25rem);
+  }
+}
+
+/* --------------------------------------------------------------- motion */
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* the page opening, once: the words, word by word, then the invitation, then the way round */
+  .headline .w {
+    animation: word 600ms var(--ease-out) calc(80ms + var(--w) * 24ms) backwards;
+  }
+
+  .invite-line {
+    animation: settle 500ms var(--ease-out) 520ms backwards;
+  }
+
+  .classic {
+    animation: settle 500ms var(--ease-out) 640ms backwards;
+  }
+
+  .guide-word.swap,
+  .guide-line.swap {
+    animation: settle var(--enter) var(--ease-out);
+  }
+
+  /* pinned by its transform, so it can only fade */
+  #speech.on {
+    animation: fade var(--quick) var(--ease-out);
+  }
+
+  #prompt.on {
+    animation: pop var(--quick) var(--ease-out);
+  }
+}
+
+@keyframes word {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em);
+  }
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pop {
+  /* translate and scale, not transform: the script owns transform to pin the key to its object */
+  from {
+    opacity: 0;
+    translate: 0 0.25rem;
+    scale: 0.95;
+  }
+}
+
+/* Less motion means the fades stay and the travelling goes. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --travel: 0rem;
+  }
+
+  /* the wash still fits the words, it just doesn't ease between them */
+  .guide {
+    interpolate-size: numeric-only;
+  }
+
+  .button,
+  .button svg,
+  .classic-ring,
+  .classic-ring svg,
+  #chip::after,
+  #panel {
+    transition-property: background-color, color, box-shadow, opacity;
+  }
+
+  .button:not(:disabled):active,
+  .classic:active .classic-ring,
+  #panel {
+    transform: none;
+  }
+
+  .walk .foot {
+    translate: none !important;
+  }
+}
+
+/* ------------------------------------------------------------- footprints */
+
+/* the icon's feet go for a walk while you point at the invitation: footsteps.ts lays the prints */
+.trail {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--accent);
+}
+
+.print {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0.85;
+  /* only the two feet ever move once they are down: the glances when they are caught out */
+  transition: transform 150ms var(--ease-out);
+  /* the trail behind them fades as it gets older, never quite away */
+  animation: print-age 16s linear 0.4s forwards;
+}
+
+.print svg {
+  display: block;
+  width: var(--fw, 10px);
+  height: var(--fh, 4px);
+  margin: calc(var(--fh, 4px) / -2) 0 0 calc(var(--fw, 10px) / -2);
+  animation: print-in 160ms var(--ease-out);
+  transition: opacity 360ms ease-out;
+}
+
+/* caught out: a small start where they stand */
+.print.startled svg {
+  animation: print-startle 240ms var(--ease-out);
+}
+
+@keyframes print-startle {
+  35% {
+    scale: 1.35;
+  }
+}
+
+/* left behind when they head home, or picked up as they run */
+.print.gone svg {
+  opacity: 0;
+}
+
+@keyframes print-in {
+  from {
+    opacity: 0;
+    scale: 0.6;
+  }
+}
+
+@keyframes print-age {
+  to {
+    opacity: 0.3;
+  }
+}
+
+/* while they are out walking, the icon is empty: they come back to it */
+.walk .foot {
+  transition:
+    translate var(--quick) var(--ease-out),
+    opacity 120ms ease;
+}
+
+.walk.wandering .foot {
+  opacity: 0;
+}
+
+/* ---------------------------------------------------------------- avatar */
+
+/* the visitor's own picture, top left while walking: the way into dressing them */
+.avatar {
+  position: absolute;
+  z-index: 1;
+  top: var(--edge-top);
+  left: var(--gutter);
+  width: 3.75rem;
+  height: 3.75rem;
+  border-radius: 1.05rem;
+  pointer-events: auto;
+}
+
+.avatar:focus-visible {
+  outline-offset: 4px;
+}
+
+.avatar-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  background: #eadfc7;
+  transition: scale var(--press) var(--ease-out);
+}
+
+/* the ink edge sits over the picture, so the picture can never cover it */
+.avatar-face::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 2.5px var(--ink);
+}
+
+.avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform-origin: 50% 85%;
+  transition:
+    opacity var(--enter) var(--ease-out),
+    transform var(--quick) var(--ease-out);
+}
+
+.avatar[data-ready] img {
+  opacity: 1;
+}
+
+.avatar:active .avatar-face {
+  scale: 0.95;
+}
+
+/* what it does, said beside it while you point at it */
+.avatar-label {
+  position: absolute;
+  left: calc(100% + 0.625rem);
+  top: 50%;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  color: var(--ground);
+  font: 550 0.875rem / 1 var(--text);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  translate: -0.25rem -50%;
+  transition:
+    opacity 125ms var(--ease-out),
+    translate 125ms var(--ease-out);
+}
+
+.avatar:focus-visible .avatar-label {
+  opacity: 1;
+  translate: 0 -50%;
+  transition-duration: 180ms;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .avatar:hover img {
+    transform: translateY(-2px) scale(1.06);
+  }
+
+  .avatar:hover .avatar-label {
+    opacity: 1;
+    translate: 0 -50%;
+    transition-duration: 180ms;
+  }
+}
+
+/* -------------------------------------------------------------- customize */
+
+#customize {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  /* room at the top for the way back, which sits where the world keeps its own way out */
+  padding: calc(var(--edge-top) + 2.75rem + var(--s4)) min(var(--gutter), 2rem) min(var(--gutter), 4vh);
+  background: rgb(28 25 21 / 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--quick) var(--ease-out),
+    visibility 0s linear var(--quick);
+}
+
+#customize.open {
+  opacity: 1;
+  visibility: visible;
+  transition-duration: var(--enter), 0s;
+  transition-delay: 0s;
+}
+
+#customize-close {
+  position: absolute;
+  top: var(--edge-top);
+  right: var(--gutter);
+}
+
+/* while dressing, the world's own way out steps aside for the sheet's, once the sheet has faded in over it */
+.hero[data-mode='play'].dressing .leave {
+  visibility: hidden;
+  transition: visibility 0s linear var(--enter);
+}
+
+/* it grows out of the avatar that opened it: customize.ts points the origin there */
+#customize-panel {
+  --card: #fbf9f4;
+  --skin: #f6d2ae;
+  --wood: #a8723f;
+  --jacket: #e7ad38;
+  --jacket-dark: color-mix(in oklab, var(--jacket) 78%, #2a1c16);
+  --hair: #4a3328;
+  /* everything that takes height follows the window's height too, so a laptop sees the whole sheet
+     without scrolling; only short phones and small windows fall back to scrolling it */
+  --swatch: clamp(2.25rem, 6.1vh, 3.25rem);
+  --swatch-radius: clamp(0.7rem, 1.6vh, 0.8rem);
+  --field-gap: clamp(0.9rem, 2.4vh, 1.6rem);
+  width: min(66rem, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* one measure for the card's edges and the gap between its two panes, so the panes sit evenly in it */
+  --pad: clamp(1.25rem, min(3vw, 4vh), 2.5rem);
+  padding: var(--pad);
+  border-radius: calc(var(--radius) * 1.6);
+  background: var(--ground);
+  box-shadow: 0 30px 70px -28px rgb(28 25 21 / 0.55);
+  opacity: 0;
+  transform: scale(0.94);
+  transition:
+    opacity var(--quick) var(--ease-out),
+    transform var(--quick) var(--ease-out);
+}
+
+#customize.open #customize-panel {
+  opacity: 1;
+  transform: none;
+  transition-duration: var(--enter), 340ms;
+}
+
+.custom-body {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--pad);
+}
+
+.controls {
+  display: grid;
+  align-content: start;
+  /* as tall as the figure's corner beside it: whatever room is over goes evenly between the rows */
+  align-content: space-between;
+  gap: var(--field-gap);
+  margin: 0;
+  padding: clamp(1rem, 2.6vh, 1.5rem) 1.5rem clamp(1.15rem, 3vh, 1.75rem);
+  border-radius: var(--radius);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+
+.field {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.field legend {
+  padding: 0;
+  font-size: 1.0625rem;
+  font-weight: 450;
+}
+
+.field legend {
+  margin-bottom: clamp(0.45rem, 1.1vh, 0.75rem);
+}
+
+.swatches {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.swatch {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--swatch);
+  height: var(--swatch);
+  border-radius: var(--swatch-radius);
+  background: var(--card);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--press) var(--ease-out),
+    box-shadow var(--quick) ease;
+}
+
+/* the real control, laid over the whole swatch: arrow keys move through a group, Space toggles */
+.swatch input {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  appearance: none;
+}
+
+.swatch:active {
+  transform: scale(0.94);
+}
+
+.swatch:has(input:focus-visible) {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.swatch svg {
+  width: 1.875rem;
+  height: 1.875rem;
+  overflow: visible;
+  opacity: 0.7;
+  transition: opacity var(--quick) ease;
+}
+
+.swatch:has(input:checked) svg {
+  opacity: 1;
+}
+
+/* chosen: the picture gives a small hop */
+.swatch.picked svg {
+  animation: hop 300ms var(--ease-out);
+}
+
+@keyframes hop {
+  40% {
+    transform: translateY(-3px);
+  }
+}
+
+.swatch .eye {
+  fill: var(--ink);
+}
+
+.swatch .mouth,
+.swatch .frame {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.swatch .head,
+.swatch .cloth,
+.swatch .wood {
+  stroke: var(--ink);
+  stroke-width: 1.3;
+  stroke-linejoin: round;
+}
+
+.swatch .head {
+  fill: var(--skin);
+}
+
+.swatch .hair {
+  fill: var(--hair);
+  stroke: var(--ink);
+  stroke-width: 1.3;
+  stroke-linejoin: round;
+  transition: fill var(--quick) ease;
+}
+
+/* the hats, the scarf and the pack's lid are cut from the jacket, so they follow its colour */
+.swatch .cloth {
+  fill: var(--jacket);
+  transition: fill var(--quick) ease;
+}
+
+.swatch .cloth.dark {
+  fill: var(--jacket-dark);
+}
+
+.swatch .wood {
+  fill: var(--wood);
+}
+
+.swatch .gold {
+  fill: #f2bf36;
+  stroke: var(--ink);
+  stroke-width: 1.3;
+}
+
+.dot {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: inset 0 0 0 1px rgb(28 25 21 / 0.18);
+  transition: scale var(--quick) var(--ease-out);
+}
+
+.swatch:has(input:checked) .dot {
+  scale: 1.12;
+}
+
+/* one ring per group, worn by the chosen swatch; it slides from one choice to the next */
+.ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--swatch);
+  height: var(--swatch);
+  border-radius: var(--swatch-radius);
+  box-shadow: inset 0 0 0 2px var(--ink);
+  pointer-events: none;
+  transition: transform 260ms var(--ease-out);
+}
+
+.ring.instant {
+  transition: none;
+}
+
+/* accessories are each on or off, so each wears its own ring */
+.swatch.toggle::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 2px var(--ink);
+  pointer-events: none;
+  opacity: 0;
+  scale: 0.9;
+  transition:
+    opacity 150ms var(--ease-out),
+    scale 200ms var(--ease-out);
+}
+
+.swatch.toggle:has(input:checked)::after {
+  opacity: 1;
+  scale: 1;
+}
+
+/* the figure's own corner: a little light falls where it stands. It takes the choices' height
+   rather than setting one, so it never makes the sheet taller than they are */
+.stage {
+  position: relative;
+  min-height: clamp(18rem, 46vh, 30rem);
+  overflow: hidden;
+  border-radius: var(--radius);
+  background:
+    radial-gradient(60% 50% at 50% 55%, rgb(255 253 247 / 0.95), rgb(255 253 247 / 0) 75%),
+    var(--ground);
+}
+
+.stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  pointer-events: none;
+}
+
+.stage-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.stage.over-figure {
+  cursor: pointer;
+}
+
+/* what the figure says when poked: the world's speech card, its square corner pointing back at the head */
+.stage-say {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  min-height: 2.4rem;
+  margin: 0;
+  padding: 0 0.9rem;
+  border-radius: var(--radius-small) var(--radius-small) var(--radius-small) 0;
+  background: var(--ground);
+  box-shadow:
+    inset 0 0 0 1px var(--hairline),
+    0 10px 24px -12px rgb(28 25 21 / 0.5);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  translate: 0 -100%;
+  transform-origin: 0 100%;
+  opacity: 0;
+  scale: 0.9;
+  transition:
+    opacity 150ms var(--ease-out),
+    scale 200ms var(--ease-out);
+}
+
+.stage-say.on {
+  opacity: 1;
+  scale: 1;
+}
+
+@media (max-width: 55.99rem) {
+  .avatar {
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 0.9rem;
+  }
+
+  #customize-panel {
+    --pad: 1.25rem;
+    border-radius: var(--radius);
+  }
+
+  .custom-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* the figure first, so you see what you are changing as you scroll the choices */
+  .stage {
+    order: -1;
+    min-height: 0;
+    height: clamp(15rem, 40svh, 22rem);
+  }
+
+  .controls {
+    padding: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* opening: the choices arrive top to bottom, a beat apart, and the figure with them */
+  #customize.open .field,
+  #customize.open .stage {
+    animation: settle 440ms var(--ease-out) calc(70ms + var(--i) * 40ms) backwards;
+  }
+
+  /* a picture changed while the sheet was open pops back in, so you see where the change went */
+  .avatar.fresh img {
+    animation: fresh 460ms var(--ease-out);
+  }
+}
+
+@keyframes fresh {
+  0% {
+    scale: 0.82;
+    opacity: 0.3;
+  }
+
+  55% {
+    scale: 1.05;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #customize-panel {
+    transform: none;
+  }
+
+  #customize-panel,
+  .avatar img,
+  .avatar-face,
+  .avatar-label,
+  .swatch,
+  .dot,
+  .ring,
+  .swatch.toggle::after,
+  .stage-say {
+    transition-property: opacity, box-shadow, fill;
+  }
+
+  .avatar:active .avatar-face,
+  .swatch:active,
+  .swatch:has(input:checked) .dot,
+  .swatch.toggle::after {
+    scale: none;
+    transform: none;
+  }
+
+  /* pinned to the head by its transform, so it only stops growing in */
+  .stage-say {
+    scale: none;
+  }
+
+  .avatar:hover img {
+    transform: none;
+  }
+}
